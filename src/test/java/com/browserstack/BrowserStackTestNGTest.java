@@ -110,8 +110,6 @@ public class BrowserStackTestNGTest {
             bstackOptionsMap.put("source", "testng:sample-master:v1.0");
         }
 
-        System.out.println("Caps" + capabilities);
-
         driver = new RemoteWebDriver(
                 new URL("http://" + username + ":" + accessKey + "@" + config.get("server") + "/wd/hub"), capabilities);
     }
