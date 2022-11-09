@@ -20,6 +20,7 @@ public class BrowserStackTestNGTest {
     private static Local l;
     private static JSONObject config;
     private static Map<String, Object> commonCapabilities;
+    private static Map<String, String> browserstackLocalOptions;
     private static String username;
     private static String accessKey;
 
@@ -42,12 +43,16 @@ public class BrowserStackTestNGTest {
             accessKey = (String) config.get("key");
         }
 		try {
-			if ((bstackOptionsMap.get("local") != null &&
+            browserstackLocalOptions = (Map<String, String>) config.get("browserstackLocalOptions");
+            if ((bstackOptionsMap.get("local") != null &&
 					bstackOptionsMap.get("local").toString().equalsIgnoreCase("true") && (l == null))) {
 				l = new Local();
 				Map<String, String> options = new HashMap<String, String>();
-				options.put("key", accessKey);
-				l.start(options);
+                if (browserstackLocalOptions != null) {
+                    options.putAll(browserstackLocalOptions);
+                }
+                options.put("key", accessKey);
+                l.start(options);
 			}
 		} catch (Exception e) {
 			System.out.println("Error while start local - " + e);
@@ -85,16 +90,27 @@ public class BrowserStackTestNGTest {
         }
 
         if (capabilities.getCapability("bstack:options") != null) {
+            browserstackLocalOptions = (Map<String, String>) config.get("browserstackLocalOptions");
             HashMap bstackOptionsMap = (HashMap) capabilities.getCapability("bstack:options");
             if ((bstackOptionsMap.get("local") != null &&
-                    bstackOptionsMap.get("local").toString().equalsIgnoreCase("true") && (l == null || !l.isRunning()))) {
-                l = new Local();
-                Map<String, String> options = new HashMap<String, String>();
-                options.put("key", accessKey);
-                l.start(options);
+                    bstackOptionsMap.get("local").toString().equalsIgnoreCase("true"))) {
+                if (l == null || !l.isRunning()) {
+                    l = new Local();
+                    Map<String, String> options = new HashMap<String, String>();
+                    if (browserstackLocalOptions != null) {
+                        options.putAll(browserstackLocalOptions);
+                    }
+                    options.put("key", accessKey);
+                    l.start(options);
+                }
+                if (browserstackLocalOptions != null && browserstackLocalOptions.containsKey("localIdentifier")) {
+                    bstackOptionsMap.put("localIdentifier", browserstackLocalOptions.get("localIdentifier"));
+                }
             }
             bstackOptionsMap.put("source", "testng:sample-master:v1.0");
         }
+
+        System.out.println("Caps" + capabilities);
 
         driver = new RemoteWebDriver(
                 new URL("http://" + username + ":" + accessKey + "@" + config.get("server") + "/wd/hub"), capabilities);

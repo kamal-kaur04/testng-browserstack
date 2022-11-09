@@ -11,6 +11,9 @@
       "local": true
     }
   },
+  "browserstackLocalOptions": {
+    "localIdentifier": "browserstack_sample"
+  },
 
   "environments": {
     "chrome": {
