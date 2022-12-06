@@ -11,8 +11,9 @@
 - Clone the repository
 - Replace YOUR_USERNAME and YOUR_ACCESS_KEY with your BrowserStack access credentials in browserstack.yml.
 - Install dependencies `mvn compile`
-- To run the test suite having cross-platform with parallelization, run `mvn test -P sample-test`
-- To run local tests, run `mvn test -P sample-local-test`
+- To run the test suite locally, run `mvn test -P sample-test`
+- To run the test suite having cross-platform with parallelization on browserstack, run `mvn test -P sample-test-browserstack`
+- To run local (privately hosted websites) tests on browserstack, run `mvn test -P sample-local-test`
 
 Understand how many parallel sessions you need by using our [Parallel Test Calculator](https://www.browserstack.com/automate/parallel-calculator?ref=github)
 
@@ -65,8 +66,9 @@ This repository uses the BrowserStack SDK to run tests on BrowserStack. Follow t
 
 - Clone the repository
 - Install dependencies `gradle build`
-- To run the test suite having cross-platform with parallelization, run `gradle sampleTest`
-- To run local tests, run `gradle sampleLocalTest`
+- To run the test suite locally, run `gradle sampleTest`
+- To run the test suite having cross-platform with parallelization on browserstack, run `gradle sampleTestBrowserstack`
+- To run local (privately hosted websites) tests on browserstack, run `gradle sampleLocalTest`
 
 Understand how many parallel sessions you need by using our [Parallel Test Calculator](https://www.browserstack.com/automate/parallel-calculator?ref=github)
  
