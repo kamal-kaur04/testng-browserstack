@@ -34,18 +34,18 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-        run:
-          - mvn compile
-          - mvn clean install
+        run: |
+          mvn compile
+          mvn clean install
       - name: Run mvn profile sample-test-browserstack
-        run:
-          - mvn compile
-          - mvn test -P sample-test-browserstack
+        run: |
+          mvn compile
+          mvn test -P sample-test-browserstack
       - name: Run mvn profile sample-local-test
-        run:
-          - mvn compile
-          - mvn test -P sample-local-test
+        run: |
+          mvn compile
+          mvn test -P sample-local-test
       - name: Run mvn profile sample-test
-        run:
-          - mvn compile
-          - mvn test -P sample-test
+        run: |
+          mvn compile
+          mvn test -P sample-test
