@@ -31,6 +31,9 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Run mvn clean install
+        env:
+          BROWSERSTACK_USERNAME: ${{ test.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ test.BROWSERSTACK_ACCESS_KEY }}
         run:
           - mvn compile
           - mvn clean install
