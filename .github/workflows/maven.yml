@@ -18,6 +18,9 @@ jobs:
         java: [ '8', '17' ]
         os: [ 'macos-latest', 'windows-latest' ]
     name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
+    env:
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
     steps:
       - uses: actions/checkout@v3
@@ -28,17 +31,10 @@ jobs:
           browser: chrome
           version: latest
           java-version: ${{ matrix.java }}
-      - name: Build with Maven
-        env:
-          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-        run: |
-          echo $BROWSERSTACK_USERNAME
-          mvn -B package --file pom.xml
       - name: Run mvn clean install
         run: |
           mvn compile
-          mvn clean install
+          mvn test
       - name: Run mvn profile sample-test-browserstack
         run: |
           mvn compile
