@@ -1,0 +1,48 @@
+# This job is to test different maven profiles in master branch again Pull Request raised
+# This workflow targets Java with Maven execution
+
+name: TestNG SDK Test workflow for Maven
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        java: [ '8', '17' ]
+        os: [ 'macos-latest', 'windows-latest' ]
+    name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          browser: chrome
+          version: latest
+          java-version: ${{ matrix.java }}
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Run mvn clean install
+        run:
+          - mvn compile
+          - mvn clean install
+      - name: Run mvn profile sample-test-browserstack
+        run:
+          - mvn compile
+          - mvn test -P sample-test-browserstack
+      - name: Run mvn profile sample-local-test
+        run:
+          - mvn compile
+          - mvn test -P sample-local-test
+      - name: Run mvn profile sample-test
+        run:
+          - mvn compile
+          - mvn test -P sample-test
