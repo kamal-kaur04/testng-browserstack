@@ -29,11 +29,13 @@ jobs:
           version: latest
           java-version: ${{ matrix.java }}
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
-      - name: Run mvn clean install
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        run: |
+          echo $BROWSERSTACK_USERNAME
+          mvn -B package --file pom.xml
+      - name: Run mvn clean install
         run: |
           mvn compile
           mvn clean install
