@@ -5,9 +5,9 @@ name: TestNG SDK Test workflow for Maven
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ "sdk" ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ "sdk" ]
 
 jobs:
   build:
