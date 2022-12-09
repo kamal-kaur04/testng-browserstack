@@ -1,7 +1,7 @@
-# This job is to test different maven profiles in master branch again Pull Request raised
-# This workflow targets Java with Maven execution
+# This job is to test different gradle profiles in master branch again Pull Request raised
+# This workflow targets Java with Gradle execution
 
-name: TestNG SDK Test workflow for Maven
+name: TestNG SDK Test workflow for Gradle
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        java: [ '8', '17' ]
+        java: [ '11', '17' ]
         os: [ 'macos-latest', 'windows-latest' ]
     name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
     env:
@@ -29,19 +29,15 @@ jobs:
           browser: chrome
           version: latest
           java-version: ${{ matrix.java }}
-      - name: Run mvn clean install
+      - name: Run gradle profile sample-test-browserstack
         run: |
-          mvn compile
-          mvn test
-      - name: Run mvn profile sample-test-browserstack
+          gradle build
+          gradle sampleTestBrowserstack
+      - name: Run gradle profile sample-local-test
         run: |
-          mvn compile
-          mvn test -P sample-test-browserstack
-      - name: Run mvn profile sample-local-test
+          gradle build
+          gradle sampleLocalTest
+      - name: Run gradle profile sample-test
         run: |
-          mvn compile
-          mvn test -P sample-local-test
-      - name: Run mvn profile sample-test
-        run: |
-          mvn compile
-          mvn test -P sample-test
+          gradle build
+          gradle sampleTest
