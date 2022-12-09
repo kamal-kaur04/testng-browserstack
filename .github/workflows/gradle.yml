@@ -29,10 +29,6 @@ jobs:
           browser: chrome
           version: latest
           java-version: ${{ matrix.java }}
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: build
       - name: Run gradle profile sample-test-browserstack
         run: |
           gradle build
