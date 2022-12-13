@@ -1,4 +1,4 @@
-# This job is to test different maven profiles in master branch again Pull Request raised
+# This job is to test different maven profiles in sdk branch again Pull Request raised
 # This workflow targets Java with Maven execution
 
 name: TestNG SDK Test workflow for Maven
@@ -8,6 +8,7 @@ on:
     branches: [ "sdk" ]
     types: [ opened, reopened ]
   issue_comment:
+    branches: [ "sdk" ]
     types: [ created ]
 
 jobs:
@@ -23,7 +24,7 @@ jobs:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-#    if: ${{ github.event.comment.body == 'RUN_TESTS' || contains(fromJson('["opened", "reopened"]'), github.event.action)}}
+    if: ${{ github.event.comment.body == 'RUN_TESTS' || contains(fromJson('["opened", "reopened"]'), github.event.action)}}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Java
