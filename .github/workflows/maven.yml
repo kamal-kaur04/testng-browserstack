@@ -23,7 +23,7 @@ jobs:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-    if: ${{ github.event.comment.body == 'RUN_TESTS' || contains(fromJson('["opened", "reopened"]'), github.event.action)}}
+#    if: ${{ github.event.comment.body == 'RUN_TESTS' || contains(fromJson('["opened", "reopened"]'), github.event.action)}}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Java
@@ -35,6 +35,10 @@ jobs:
         uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: beta
+      - name: print body
+        env:
+          BODY: ${{ github.event.comment.body }}
+        run: echo "$BODY"
       - run: chrome --version
       - name: Run mvn test
         run: |
