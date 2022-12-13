@@ -31,14 +31,14 @@ jobs:
           browser: chrome
           version: latest
           java-version: ${{ matrix.java }}
-      - name: Run mvn clean install
+      - name: Run mvn test
         run: |
           mvn compile
           mvn test
-      - name: Run mvn profile sample-test-browserstack
+      - name: Run mvn profile skip-browserstack-test
         run: |
           mvn compile
-          mvn test -P sample-test-browserstack
+          mvn test -P skip-browserstack-test
       - name: Run mvn profile sample-local-test
         run: |
           mvn compile
