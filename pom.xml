@@ -107,7 +107,7 @@
     </profile>
 
     <profile>
-      <id>sample-test</id>
+      <id>skip-browserstack-test</id>
       <build>
         <plugins>
           <plugin>
@@ -118,6 +118,10 @@
               <suiteXmlFiles>
                 <suiteXmlFile>config/sample-test.testng.xml</suiteXmlFile>
               </suiteXmlFiles>
+              <argLine>-javaagent:${com.browserstack:browserstack-java-sdk:jar}</argLine>
+              <environmentVariables>
+                <BROWSERSTACK_AUTOMATION>false</BROWSERSTACK_AUTOMATION>
+              </environmentVariables>
             </configuration>
           </plugin>
         </plugins>
@@ -125,7 +129,7 @@
     </profile>
 
     <profile>
-      <id>sample-test-browserstack</id>
+      <id>sample-test</id>
       <build>
         <plugins>
           <plugin>
