@@ -13,6 +13,7 @@ public class SeleniumTest {
     @BeforeMethod(alwaysRun = true)
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
+        /* WebDriverManager will set up chromedriver to run tests on locally existing chrome */
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("start-maximized");
