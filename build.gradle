@@ -24,15 +24,17 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-task sampleTest(type: Test) {
+task skipBrowserstackTest(type: Test) {
     useTestNG() {
+        environment = [ 'BROWSERSTACK_AUTOMATION': 'false' ]
         dependsOn cleanTest
         useDefaultListeners = true
         suites "config/sample-test.testng.xml"
+        jvmArgs "-javaagent:${browserstackSDKArtifact.file}"
     }
 }
 
-task sampleTestBrowserstack(type: Test) {
+task sampleTest(type: Test) {
     useTestNG() {
         dependsOn cleanTest
         useDefaultListeners = true
