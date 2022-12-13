@@ -16,8 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        java: [ '8', '17' ]
-        os: [ 'macos-latest', 'windows-latest' ]
+        java: [ '8', '11', '17' ]
+        os: [ 'macos-latest', 'windows-latest', 'ubuntu-latest' ]
     name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
     env:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
