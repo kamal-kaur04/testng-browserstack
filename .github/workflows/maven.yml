@@ -4,12 +4,14 @@
 name: TestNG SDK Test workflow for Maven
 
 on:
-  push:
-    branches: [ "sdk" ]
   pull_request:
     branches: [ "sdk" ]
+    types: [ opened, reopened, ready_for_review, review_requested ]
+  issue_comment:
+    types: [ created ]
 
 jobs:
+  if: contains(github.event.comment.body, 'RUN_TESTS')
   build:
 
     runs-on: ${{ matrix.os }}
