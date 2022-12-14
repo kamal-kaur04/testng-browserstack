@@ -5,7 +5,8 @@ name: TestNG SDK Test workflow for Maven on comment RUN_TESTS
 
 on:
   issue_comment:
-    types: [ created, edited ]
+    types:
+      - created
 
 jobs:
   comment-run:
