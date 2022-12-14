@@ -5,7 +5,8 @@ name: TestNG SDK Test workflow for Maven on comment RUN_TESTS
 
 on:
   issue_comment:
-    types: [ created, edited ]
+    types:
+      - created
 
 jobs:
   comment-run:
@@ -36,10 +37,6 @@ jobs:
         run: |
           mvn compile
           mvn test
-      - name: Run mvn profile skip-browserstack-test
-        run: |
-          mvn compile
-          mvn test -P skip-browserstack-test
       - name: Run mvn profile sample-local-test
         run: |
           mvn compile
