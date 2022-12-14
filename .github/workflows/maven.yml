@@ -1,13 +1,14 @@
-# This job is to test different maven profiles in master branch again Pull Request raised
+# This job is to test different maven profiles in sdk branch again Pull Request raised
 # This workflow targets Java with Maven execution
 
 name: TestNG SDK Test workflow for Maven
 
 on:
-  push:
-    branches: [ "sdk" ]
   pull_request:
     branches: [ "sdk" ]
+    types: [ opened, reopened ]
+  issue_comment:
+    types: [ created, edited ]
 
 jobs:
   build:
@@ -15,22 +16,30 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        java: [ '8', '17' ]
-        os: [ 'macos-latest', 'windows-latest' ]
+        java: [ '8', '11', '17' ]
+        os: [ 'macos-latest', 'windows-latest', 'ubuntu-latest' ]
     name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
     env:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
+#    if: contains(github.event.comment.body, 'RUN_TESTS') || contains(fromJson('["opened", "reopened"]'), github.event.action)
     steps:
       - uses: actions/checkout@v3
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          browser: chrome
-          version: latest
           java-version: ${{ matrix.java }}
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: beta
+      - name: print body
+        env:
+          BODY: ${{ github.event.comment.body }}
+        run: echo "$BODY"
+      - run: chrome --version
       - name: Run mvn test
         run: |
           mvn compile
