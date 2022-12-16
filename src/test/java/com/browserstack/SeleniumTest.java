@@ -22,6 +22,7 @@ public class SeleniumTest {
 
     @AfterMethod(alwaysRun = true)
     public void tearDown() throws Exception {
+        //quit
         driver.quit();
     }
 }
