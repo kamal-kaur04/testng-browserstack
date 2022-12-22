@@ -11,6 +11,7 @@ on:
 jobs:
   maven-run:
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
       max-parallel: 3
       matrix:
