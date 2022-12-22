@@ -11,8 +11,8 @@ jobs:
   comment-run:
     if: contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
-    needs: [ consecutiveness ]
     strategy:
+      max-parallel: 3
       matrix:
         java: [ '8', '11', '17' ]
         os: [ 'macos-latest', 'windows-latest', 'ubuntu-latest' ]
