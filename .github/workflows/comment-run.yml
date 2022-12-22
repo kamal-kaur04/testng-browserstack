@@ -1,15 +1,15 @@
 # This job is to test different maven profiles in sdk branch again Pull Request raised
 # This workflow targets Java with Maven execution
 
-name: TestNG SDK Test workflow for Maven
+name: TestNG SDK Test workflow for Maven on comment RUN_TESTS
 
 on:
-  pull_request:
-    branches: [ "master", "sdk" ]
-    types: [ opened, reopened ]
+  issue_comment:
+    types: [ created, edited ]
 
 jobs:
-  maven-run:
+  comment-run:
+    if: contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
