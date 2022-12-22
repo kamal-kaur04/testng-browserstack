@@ -11,6 +11,7 @@ jobs:
   comment-run:
     if: contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
+    needs: [ consecutiveness ]
     strategy:
       matrix:
         java: [ '8', '11', '17' ]

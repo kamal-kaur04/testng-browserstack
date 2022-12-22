@@ -11,6 +11,7 @@ on:
 jobs:
   maven-run:
     runs-on: ${{ matrix.os }}
+    needs: [ consecutiveness ]
     strategy:
       matrix:
         java: [ '8', '11', '17' ]
