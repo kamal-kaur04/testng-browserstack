@@ -8,7 +8,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class SeleniumTest {
-    public WebDriver driver;
+    public static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     @BeforeMethod(alwaysRun = true)
     @SuppressWarnings("unchecked")
@@ -17,11 +17,11 @@ public class SeleniumTest {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("start-maximized");
-        driver = new ChromeDriver(options);
+        driver.set(new ChromeDriver(options));
     }
 
     @AfterMethod(alwaysRun = true)
     public void tearDown() throws Exception {
-        driver.quit();
+        driver.get().quit();
     }
 }
