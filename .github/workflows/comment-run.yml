@@ -30,6 +30,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
+          script: |
+            const creator = context.payload.sender.login
+            const result = await github.rest.teams.getMembershipForUserInOrg({
+              org: context.repo.owner,
+              team_slug: 'asi-devs',
+              username: creator
+            })
+            console.log(creator, result) // do whatever you want
       - name: Run mvn test
         run: |
           mvn compile
