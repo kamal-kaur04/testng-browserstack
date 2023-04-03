@@ -5,11 +5,12 @@ name: TestNG SDK Test workflow for Maven on comment RUN_TESTS
 
 on:
   issue_comment:
-    types: [ created, edited ]
+    branches: [ "master" ]
+    types: [ created ]
 
 jobs:
   comment-run:
-    if: contains(github.event.comment.body, 'RUN_TESTS')
+    if: contains(github.event.comment.body, 'RUN_TESTS') && github.event.issue.pull_request
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     strategy:
@@ -19,11 +20,23 @@ jobs:
         os: [ 'macos-latest', 'windows-latest', 'ubuntu-latest' ]
     name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
     env:
+      user: context.payload.sender.login
+      check-team: asi-devs
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const creator = context.payload.sender.login
+            const result = await github.rest.teams.getMembershipForUserInOrg({
+              org: context.repo.owner,
+              team_slug: 'asi-devs',
+              username: creator
+            })
+            console.log("HERE", creator, result) // do whatever you want
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
