@@ -10,7 +10,7 @@ on:
 
 jobs:
   comment-run:
-    if: github.event.issue.pull_request && contains('["francisf"]', github.actor) && contains(github.event.comment.body, 'RUN_TESTS')
+    if: github.event.issue.pull_request && contains(vars.BROWSERSTACK_USERS, github.actor) && contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     strategy:
