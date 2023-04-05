@@ -34,8 +34,8 @@ jobs:
               org: context.repo.owner,
               team_slug: 'asi-devs',
               username: creator
-            }).catch(() => ({status: 404}));
-            console.log(`The comment creator ${creator} membership - ${result}`)
+            }).catch((err) => ({status: err.status, response: err.response}));
+            console.log(`The comment creator ${creator} membership Status : ${result.status} Response : ${result.response}`)
             if (result.status === 404) {
               core.setFailed('User is not part of the owner team!')
             }
