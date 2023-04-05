@@ -10,10 +10,11 @@ on:
 
 jobs:
   comment-run:
-    if: always() && github.event.issue.pull_request && contains(github.event.comment.body, 'RUN_TESTS')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
 #    continue-on-error: true
     strategy:
+      fail-fast: false
       max-parallel: 1
       matrix:
         java: [ '8', '11', '17' ]
