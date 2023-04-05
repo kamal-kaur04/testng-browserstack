@@ -27,7 +27,7 @@ jobs:
       - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         id: check-membership
         with:
-          github-token: github.token
+          github-token: ${{ github.token }}
           script: |
             const creator = context.payload.sender.login
             const result = await github.rest.teams.getMembershipForUserInOrg({
@@ -35,8 +35,8 @@ jobs:
               team_slug: 'asi-devs',
               username: creator
             }).catch((err) => ({status: err.status, response: err.response}));
-            console.log(`The comment creator ${creator} membership Status : ${result.status} Response : ${result.response}`)
-            if (result.status === 404) {
+            console.log(`The comment creator ${creator} membership Status : ${result.status} Response : ${JSON.stringify(result.response)}`)
+            if (result.status !== 404) {
               core.setFailed('User is not part of the owner team!')
             }
       - uses: actions/checkout@v3
