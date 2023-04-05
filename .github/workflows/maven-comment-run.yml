@@ -10,7 +10,7 @@ on:
 
 jobs:
   comment-run:
-    if: github.event.issue.pull_request && contains(vars.BROWSERSTACK_USERS, github.actor) && contains(github.event.comment.body, 'RUN_TESTS')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     strategy:
@@ -24,24 +24,24 @@ jobs:
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
     steps:
+      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        id: check-membership
+        with:
+          github-token: github.token
+          script: |
+            const creator = context.payload.sender.login
+            const result = await github.rest.teams.getMembershipForUserInOrg({
+              org: context.repo.owner,
+              team_slug: 'asi-devs',
+              username: creator
+            }).catch(() => ({status: 404}));
+            console.log(`The comment creator ${creator} membership - ${result}`)
+            if (result.status === 404) {
+              core.setFailed('User is not part of the owner team!')
+            }
       - uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.issue.number }}/head
-#      - uses: actions/github-script@v6
-#        id: check-membership
-#        with:
-#          script: |
-#            const creator = context.payload.sender.login
-#            const result = await github.rest.teams.getMembershipForUserInOrg({
-#              org: context.repo.owner,
-#              team_slug: 'asi-devs',
-#              username: creator
-#            })
-#            console.log(`The comment creator ${creator} membership - ${result}`)
-#            if (response.state === "active") {
-#                return "true"
-#            }
-#            core.setFailed('User is not part of the owner team!')
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
