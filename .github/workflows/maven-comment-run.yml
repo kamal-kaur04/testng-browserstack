@@ -10,9 +10,9 @@ on:
 
 jobs:
   comment-run:
-    if: github.event.issue.pull_request && contains(github.event.comment.body, 'RUN_TESTS')
+    if: always() && github.event.issue.pull_request && contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
+#    continue-on-error: true
     strategy:
       max-parallel: 1
       matrix:
@@ -36,9 +36,9 @@ jobs:
               username: creator
             }).catch((err) => ({status: err.status, response: err.response}));
             console.log(`The comment creator ${creator} membership Status : ${result.status} Response : ${JSON.stringify(result.response)}`)
-#            if (result.status !== 200) {
-#              core.setFailed('User is not part of the owner team!')
-#            }
+            if (result.status !== 200) {
+              core.setFailed('User is not part of the owner team!')
+            }
       - uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.issue.number }}/head
