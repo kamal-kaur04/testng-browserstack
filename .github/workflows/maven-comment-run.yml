@@ -28,6 +28,8 @@ jobs:
     steps:
       - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         id: status-check-in-progress
+        env:
+          job_name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
         with:
           github-token: ${{ github.token }}
           script: |
@@ -35,7 +37,7 @@ jobs:
             const result = await github.rest.checks.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: 'status-check',
+              name: process.env.job_name,
               head_sha: 'ec2ae26641885a17b8e9732619e4198586b71751',
               status: 'in_progress'
             }).catch((err) => ({status: err.status, response: err.response}));
@@ -66,7 +68,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
-      - name: Run TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
+      - name: Run mvn test
         run: |
           mvn compile
           mvn test
@@ -78,7 +80,8 @@ jobs:
         run: |
           mvn compile
           mvn test -P sample-test
-      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+      - if: always()
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         id: status-check-completed
         env:
           conclusion: ${{ job.status }}
