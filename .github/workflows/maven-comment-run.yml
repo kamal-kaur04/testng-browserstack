@@ -1,21 +1,22 @@
 # This job is to test different maven profiles in sdk branch again Pull Request raised
 # This workflow targets Java with Maven execution
 
-name: TestNG SDK Test workflow for Maven on comment RUN_TESTS
+name: TestNG SDK Test workflow for Maven on workflow_dispatch
 
 on:
-  issue_comment:
-    branches: [ "master" ]
-    types: [ created ]
+  workflow_dispatch:
+    inputs:
+      pull_request_branch:
+        description: 'The pull request branch to build'
+        required: true
 
 jobs:
   comment-run:
-    if: always() && github.event.issue.pull_request && contains(github.event.comment.body, 'RUN_TESTS')
+#    if: always() && github.event.issue.pull_request && contains(github.event.comment.body, 'RUN_TESTS')
     runs-on: ${{ matrix.os }}
-#    continue-on-error: true
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: 3
       matrix:
         java: [ '8', '11', '17' ]
         os: [ 'macos-latest', 'windows-latest', 'ubuntu-latest' ]
@@ -26,23 +27,41 @@ jobs:
 
     steps:
       - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
-        id: check-membership
+        id: status-check-in-progress
         with:
           github-token: ${{ github.token }}
           script: |
-            const creator = context.payload.sender.login
-            const result = await github.rest.teams.getMembershipForUserInOrg({
-              org: context.repo.owner,
-              team_slug: 'asi-devs',
-              username: creator
+            const commit_sha = github.sha
+            const result = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo,
+              name: 'status-check',
+              head_sha: commit_sha,
+              status: 'in_progress'
             }).catch((err) => ({status: err.status, response: err.response}));
             console.log(`The comment creator ${creator} membership Status : ${result.status} Response : ${JSON.stringify(result.response)}`)
-            if (result.status !== 200) {
-              core.setFailed('User is not part of the owner team!')
+            if (result.status !== 201) {
+              console.log('Failed to create check run');
+#              core.setFailed('User is not part of the owner team!')
             }
+#      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+#        id: check-membership
+#        with:
+#          github-token: ${{ github.token }}
+#          script: |
+#            const creator = context.payload.sender.login
+#            const result = await github.rest.teams.getMembershipForUserInOrg({
+#              org: context.repo.owner,
+#              team_slug: 'asi-devs',
+#              username: creator
+#            }).catch((err) => ({status: err.status, response: err.response}));
+#            console.log(`The comment creator ${creator} membership Status : ${result.status} Response : ${JSON.stringify(result.response)}`)
+#            if (result.status !== 200) {
+#              core.setFailed('User is not part of the owner team!')
+#            }
       - uses: actions/checkout@v3
         with:
-          ref: refs/pull/${{ github.event.issue.number }}/head
+          ref: ${{ github.event.inputs.pull_request_branch }}
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
@@ -60,3 +79,21 @@ jobs:
         run: |
           mvn compile
           mvn test -P sample-test
+      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        id: status-check-completed
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const commit_sha = github.sha
+            const result = await github.rest.checks.create({
+            owner: context.repo.owner,
+            repo: context.repo,
+            name: 'status-check',
+            head_sha: commit_sha,
+            status: 'completed',
+            conclusion: job.status
+            }).catch((err) => ({status: err.status, response: err.response}));
+            console.log(`The comment creator ${creator} membership Status : ${result.status} Response : ${JSON.stringify(result.response)}`)
+            if (result.status !== 201) {
+            console.log('Failed to create check run');
+        }
