@@ -34,9 +34,9 @@ jobs:
             const commit_sha = github.sha
             const result = await github.rest.checks.create({
               owner: context.repo.owner,
-              repo: context.repo,
+              repo: context.repo.repo,
               name: 'status-check',
-              head_sha: commit_sha,
+              head_sha: 'ec2ae26641885a17b8e9732619e4198586b71751',
               status: 'in_progress'
             }).catch((err) => ({status: err.status, response: err.response}));
             console.log(`The status-check response : ${result.status} Response : ${JSON.stringify(result.response)}`)
@@ -68,6 +68,7 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Run mvn test
         run: |
+          echo ${{ github.job }}
           mvn compile
           mvn test
       - name: Run mvn profile sample-local-test
@@ -86,9 +87,9 @@ jobs:
             const commit_sha = github.sha
             const result = await github.rest.checks.create({
             owner: context.repo.owner,
-            repo: context.repo,
+            repo: context.repo.repo,
             name: 'status-check',
-            head_sha: commit_sha,
+            head_sha: 'ec2ae26641885a17b8e9732619e4198586b71751,
             status: 'completed',
             conclusion: job.status
             }).catch((err) => ({status: err.status, response: err.response}));
