@@ -70,7 +70,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
-      - name: Run ${{ env.BROWSERSTACK_PR_SHA }}
+      - name: Run ${{ env.commit_sha }}
         run: |
           mvn compile
           mvn test
