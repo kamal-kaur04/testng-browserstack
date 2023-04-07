@@ -80,6 +80,8 @@ jobs:
           mvn test -P sample-test
       - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         id: status-check-completed
+        env:
+          conclusion: ${{ job.status }}
         with:
           github-token: ${{ github.token }}
           script: |
@@ -88,7 +90,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             name: 'status-check',
-            head_sha: 'ec2ae26641885a17b8e9732619e4198586b71751,
+            head_sha: 'ec2ae26641885a17b8e9732619e4198586b71751',
             status: 'completed',
             conclusion: job.status
             }).catch((err) => ({status: err.status, response: err.response}));
