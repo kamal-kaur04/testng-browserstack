@@ -68,7 +68,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
-      - name: Run mvn test
+      - name: Run ${{ github.sha }}
         run: |
           mvn compile
           mvn test
