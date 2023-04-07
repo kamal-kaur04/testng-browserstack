@@ -25,11 +25,15 @@ jobs:
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.pull_request_branch }}
+      - name: Fetch Commit SHA
+        run: echo "commit_sha=$(git log -1 --format='%H')" >> ${GITHUB_ENV}
       - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         id: status-check-in-progress
         env:
           job_name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
-          commit_sha: ${{ env.commit_sha }}
         with:
           github-token: ${{ github.token }}
           script: |
@@ -44,11 +48,6 @@ jobs:
             if (result.status !== 201) {
               console.log('Failed to create check run')
             }
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.pull_request_branch }}
-      - name: Fetch Commit SHA
-        run: echo "commit_sha=$(git log -1 --format='%H')" >> ${GITHUB_ENV}
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
@@ -72,7 +71,6 @@ jobs:
         env:
           conclusion: ${{ job.status }}
           job_name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
-          commit_sha: ${{ env.commit_sha }}
         with:
           github-token: ${{ github.token }}
           script: |
