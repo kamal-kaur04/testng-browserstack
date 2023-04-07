@@ -29,6 +29,7 @@ jobs:
         id: status-check-in-progress
         env:
           job_name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
+          commit_sha: ${{ env.commit_sha }}
         with:
           github-token: ${{ github.token }}
           script: |
@@ -71,6 +72,7 @@ jobs:
         env:
           conclusion: ${{ job.status }}
           job_name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
+          commit_sha: ${{ env.commit_sha }}
         with:
           github-token: ${{ github.token }}
           script: |
