@@ -26,23 +26,23 @@ jobs:
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
     steps:
-#      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
-#        id: status-check-in-progress
-#        with:
-#          github-token: ${{ github.token }}
-#          script: |
-#            const commit_sha = github.sha
-#            const result = await github.rest.checks.create({
-#              owner: context.repo.owner,
-#              repo: context.repo,
-#              name: 'status-check',
-#              head_sha: commit_sha,
-#              status: 'in_progress'
-#            }).catch((err) => ({status: err.status, response: err.response}));
-#            console.log(`The status-check response : ${result.status} Response : ${JSON.stringify(result.response)}`)
-#            if (result.status !== 201) {
-#              console.log('Failed to create check run')
-#            }
+      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        id: status-check-in-progress
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const commit_sha = github.sha
+            const result = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo,
+              name: 'status-check',
+              head_sha: commit_sha,
+              status: 'in_progress'
+            }).catch((err) => ({status: err.status, response: err.response}));
+            console.log(`The status-check response : ${result.status} Response : ${JSON.stringify(result.response)}`)
+            if (result.status !== 201) {
+              console.log('Failed to create check run')
+            }
 #      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
 #        id: check-membership
 #        with:
