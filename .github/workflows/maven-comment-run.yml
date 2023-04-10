@@ -6,7 +6,7 @@ name: TestNG SDK Test workflow for Maven on workflow_dispatch
 on:
   workflow_dispatch:
     inputs:
-      pull_request_branch:
+      pull_request_number:
         description: 'The pull request number to build'
         required: true
 
