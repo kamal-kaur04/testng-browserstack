@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       pull_request_branch:
-        description: 'The pull request branch to build'
+        description: 'The pull request number to build'
         required: true
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.pull_request_branch }}
+          ref: refs/pull/${{ github.event.inputs.pull_request_number }}/head
       - name: Fetch Commit SHA
         run: |
           git log -1 --format='%H'
