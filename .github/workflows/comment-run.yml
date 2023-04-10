@@ -1,20 +1,21 @@
 # This job is to test different maven profiles in sdk branch again Pull Request raised
 # This workflow targets Java with Maven execution
 
-name: TestNG SDK Test workflow for Maven on comment RUN_TESTS
+name: TestNG SDK Test workflow for Maven on workflow_dispatch
 
 on:
-  issue_comment:
-    branches: [ "master" ]
-    types: [ created ]
+  workflow_dispatch:
+    inputs:
+      pull_request_number:
+        description: 'The pull request number to build'
+        required: true
 
 jobs:
   comment-run:
-    if: contains(github.event.comment.body, 'RUN_TESTS') && github.event.issue.pull_request
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
     strategy:
-      max-parallel: 1
+      fail-fast: false
+      max-parallel: 3
       matrix:
         java: [ '8', '11', '17' ]
         os: [ 'macos-latest', 'windows-latest', 'ubuntu-latest' ]
@@ -25,21 +26,31 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/github-script@v6
-        id: check-membership
         with:
+          ref: refs/pull/${{ github.event.inputs.pull_request_number }}/head
+      - name: Fetch Commit SHA
+        run: |
+          git log -1 --format='%H'
+          echo "commit_sha=$(git log -1 --format='%H')" >> $GITHUB_ENV
+          echo "commit_sha=$(git log -1 --format='%H')" >> $env:GITHUB_ENV
+      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        id: status-check-in-progress
+        env:
+          job_name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
+        with:
+          github-token: ${{ github.token }}
           script: |
-            const creator = context.payload.sender.login
-            const result = await github.rest.teams.getMembershipForUserInOrg({
-              org: context.repo.owner,
-              team_slug: 'asi-devs',
-              username: creator
-            })
-            console.log(`The comment creator ${creator} membership - ${result}`)
-            if (response.state === "active") {
-                return "true"
+            const result = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: process.env.job_name,
+              head_sha: process.env.commit_sha,
+              status: 'in_progress'
+            }).catch((err) => ({status: err.status, response: err.response}));
+            console.log(`The status-check response : ${result.status} Response : ${JSON.stringify(result.response)}`)
+            if (result.status !== 201) {
+              console.log('Failed to create check run')
             }
-            core.setFailed('User is not part of the owner team!')
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
@@ -57,3 +68,24 @@ jobs:
         run: |
           mvn compile
           mvn test -P sample-test
+      - if: always()
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        id: status-check-completed
+        env:
+          conclusion: ${{ job.status }}
+          job_name: TestNG Repo ${{ matrix.Java }} - ${{ matrix.os }} Sample
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const result = await github.rest.checks.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            name: process.env.job_name,
+            head_sha: process.env.commit_sha,
+            status: 'completed',
+            conclusion: process.env.conclusion
+            }).catch((err) => ({status: err.status, response: err.response}));
+            console.log(`The status-check response : ${result.status} Response : ${JSON.stringify(result.response)}`)
+            if (result.status !== 201) {
+              console.log('Failed to create check run')
+            }
